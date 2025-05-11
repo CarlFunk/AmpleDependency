@@ -1,4 +1,4 @@
-// swift-tools-version: 5.8
+// swift-tools-version: 6.0
 
 import PackageDescription
 
@@ -10,12 +10,21 @@ let package = Package(
     products: [
         .library(
             name: "Dependency",
-            targets: ["Dependency"])
+            targets: [
+                "Dependency"
+            ])
     ],
     dependencies: [],
     targets: [
         .target(
             name: "Dependency",
-            dependencies: [])
+            dependencies: []),
+        .testTarget(
+            name: "DependencyTests",
+            dependencies: [
+                .target(
+                    name: "Dependency")
+            ]
+        ),
     ]
 )
