@@ -9,11 +9,12 @@
 import Foundation
 
 public final class DependencyContainer: DependencyContaining {
-    // TODO: Ensure thread safety of registration / resolution
     nonisolated(unsafe) public static let shared: DependencyContaining = DependencyContainer()
     
     internal var factories: [DependencyKey: () -> Any] = [:]
     internal var singletons: [DependencyKey: Any] = [:]
+    
+    private let lock = NSLock()
     
     public init() {}
     
@@ -22,6 +23,9 @@ public final class DependencyContainer: DependencyContaining {
         name: String?,
         factory: @escaping () -> Dependency
     ) {
+        lock.lock()
+        defer { lock.unlock() }
+        
         let key = DependencyKey(type: type, name: name)
         factories[key] = factory
     }
@@ -31,6 +35,9 @@ public final class DependencyContainer: DependencyContaining {
         name: String?,
         lifetime: DependencyLifetime
     ) throws -> Dependency {
+        lock.lock()
+        defer { lock.unlock() }
+        
         let key = DependencyKey(type: type, name: name)
         guard let factory = factories[key] else {
             throw DependencyError.missingRegistration(type: type, name: name)
@@ -51,6 +58,9 @@ public final class DependencyContainer: DependencyContaining {
     }
     
     public func reset() {
+        lock.lock()
+        defer { lock.unlock() }
+        
         factories.removeAll()
         singletons.removeAll()
     }
