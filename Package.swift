@@ -3,27 +3,27 @@
 import PackageDescription
 
 let package = Package(
-    name: "Dependency",
+    name: "AmpleDependency",
     platforms: [
         .iOS(.v16)
     ],
     products: [
         .library(
-            name: "Dependency",
+            name: "AmpleDependency",
             targets: [
-                "Dependency"
+                "AmpleDependency"
             ])
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "Dependency",
+            name: "AmpleDependency",
             dependencies: []),
         .testTarget(
-            name: "DependencyTests",
+            name: "AmpleDependencyTests",
             dependencies: [
                 .target(
-                    name: "Dependency")
+                    name: "AmpleDependency")
             ]
         ),
     ]
