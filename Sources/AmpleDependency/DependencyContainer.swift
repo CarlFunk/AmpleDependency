@@ -23,11 +23,8 @@ public final class DependencyContainer: DependencyContaining {
         name: String?,
         factory: @escaping () -> Dependency
     ) {
-        lock.lock()
-        defer { lock.unlock() }
-        
         let key = DependencyKey(type: type, name: name)
-        factories[key] = factory
+        setFactory(factory, for: key)
     }
     
     public func resolve<Dependency>(
@@ -35,19 +32,16 @@ public final class DependencyContainer: DependencyContaining {
         name: String?,
         lifetime: DependencyLifetime
     ) throws -> Dependency {
-        lock.lock()
-        defer { lock.unlock() }
-        
         let key = DependencyKey(type: type, name: name)
-        guard let factory = factories[key] else {
+        guard let factory = getFactory(for: key) else {
             throw DependencyError.missingRegistration(type: type, name: name)
         }
         
         switch lifetime {
         case .singleton:
-            guard let existingInstance = singletons[key] as? Dependency else {
+            guard let existingInstance = getSingleton(for: key) as? Dependency else {
                 let newInstance = factory() as! Dependency
-                singletons[key] = newInstance
+                setSingleton(newInstance, for: key)
                 return newInstance
             }
             return existingInstance
@@ -59,9 +53,34 @@ public final class DependencyContainer: DependencyContaining {
     
     public func reset() {
         lock.lock()
-        defer { lock.unlock() }
-        
         factories.removeAll()
         singletons.removeAll()
+        lock.unlock()
+    }
+    
+    // MARK: - Private
+    
+    private func getFactory(for key: DependencyKey) -> (() -> Any)? {
+        lock.withLock {
+            factories[key]
+        }
+    }
+    
+    private func setFactory(_ factory: @escaping () -> Any, for key: DependencyKey) {
+        lock.lock()
+        factories[key] = factory
+        lock.unlock()
+    }
+    
+    private func getSingleton(for key: DependencyKey) -> Any? {
+        lock.withLock {
+            singletons[key]
+        }
+    }
+    
+    private func setSingleton(_ instance: Any, for key: DependencyKey) {
+        lock.lock()
+        singletons[key] = instance
+        lock.unlock()
     }
 }
