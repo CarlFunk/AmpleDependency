@@ -1,6 +1,6 @@
 //
 //  DependencyKey.swift
-//  Dependency
+//  AmpleDependency
 //
 //  Created by Carl Funk on 5/10/25.
 //  Copyright © 2025 Carl Funk. All rights reserved.

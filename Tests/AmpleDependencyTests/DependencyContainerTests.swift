@@ -1,12 +1,12 @@
 //
 //  DependencyContainerTests.swift
-//  DependencyTests
+//  AmpleDependencyTests
 //
 //  Created by Carl Funk on 5/11/25.
 //  Copyright © 2025 Carl Funk. All rights reserved.
 //
 
-@testable import Dependency
+@testable import AmpleDependency
 import Testing
 
 struct DependencyContainerTests {

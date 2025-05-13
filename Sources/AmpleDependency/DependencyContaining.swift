@@ -1,6 +1,6 @@
 //
 //  DependencyContaining.swift
-//  Dependency
+//  AmpleDependency
 //
 //  Created by Carl Funk on 10/22/23.
 //  Copyright © 2023 Carl Funk. All rights reserved.
